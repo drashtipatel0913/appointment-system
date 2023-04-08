@@ -28,6 +28,31 @@
          </div>
       </div>
    </div>
+   <h2 class="text-center">Create Appointment</h2>
+   <hr>
+
+   <form id="appointmentForm" class="mt-5">
+      <div class="form-floating mb-3">
+         <input type="name" class="form-control" id="name" placeholder="name@example.com">
+         <label for="name">Appointment Name</label>
+      </div>
+
+      <div class="form-floating">
+         <textarea class="form-control h-100" placeholder="Purpose" id="purpose"></textarea>
+         <label for="purpose">Purpose</label>
+      </div>
+
+      <div class="mb-3">
+         <label for="date" class="form-label p-1 pt-3">Select Date</label>
+         <input type="date" class="form-control" id="date">
+      </div>
+      <div class="mb-3">
+         <label for="time" class="form-label p-1">Select Time</label>
+         <input type="time" class="form-control" id="time">
+      </div>
+      <button type="submit" id="submit" class="float-end btn btn-success btn-md my-3 px-5">Save</button>
+   </form>
+
    <script src="main.js"></script>
 </body>
 
