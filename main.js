@@ -53,6 +53,7 @@ const appointmentForm = $('appointmentForm');
 const dateInput = $('date');
 const timeInput = $('time');
 
+
 // focuses on name as user comes to the page
 _name.focus();
 
@@ -72,3 +73,101 @@ function isFormValid() {
 
    return isFormValid;
 }
+
+// Store the appointment data in a local storage
+appointmentForm.addEventListener("submit", (event) => {
+
+   event.preventDefault();
+
+   // checks if form is valid or not
+   const formIsValid = isFormValid();
+
+   if (formIsValid) {
+
+      let _name = $("name").value;
+      let purpose = $("purpose").value;
+      let dateInput = $("date").value;
+      let timeInput = $("time").value;
+      
+      let appointment = {
+         _name: _name,
+         purpose: purpose,
+         dateInput: dateInput,
+         timeInput: timeInput
+      };
+
+      createAppointment(appointment);
+
+   } else {
+      // alerts user all the fields are required
+      alert('All the form fields are required');
+   }
+});
+
+// Create an empty array to store the appointments in local storage
+let appointments = [];
+
+// Create function to add the new appointment to the appointments array and save it to local storage
+function createAppointment(appointment) {
+
+   appointments.push(appointment);
+
+   localStorage.setItem("appointments", JSON.stringify(appointments));
+
+   displayAppointments();
+   resetForm();
+}
+
+function displayAppointments() {
+   let tableBody = $("tbody");
+   let tableRows = "";
+
+   appointments = JSON.parse(localStorage.getItem("appointments")) || [];
+
+   appointments.forEach(function (appointment, index) {
+      tableRows += `
+      <tr>
+        <td>${appointment._name}</td>
+        <td>${appointment.purpose}</td>
+        <td>${appointment.dateInput}</td>
+        <td>${appointment.timeInput}</td>
+        <td>
+          <button class="btn btn-primary" onclick="editAppointment(${index})">Edit</button>
+          <button class="btn btn-danger" onclick="deleteAppointment(${index})">Delete</button>
+        </td>
+      </tr>
+    `;
+   });
+
+   tableBody.innerHTML = tableRows;
+}
+
+function editAppointment(index) {
+   let appointment = appointments[index];
+   $("name").value = appointment._name;
+   $("purpose").value = appointment.purpose;
+   $("date").value = appointment.dateInput;
+   $("time").value = appointment.timeInput;
+   $("submit").innerHTML="edit";
+   $("submit").setAttribute("data-index", index);
+   deleteAppointment(index);
+}
+
+function deleteAppointment(index) {
+   if (confirm("Are you sure you want to delete this appointment?")) {
+      appointments.splice(index, 1);
+      localStorage.setItem("appointments", JSON.stringify(appointments));
+      displayAppointments();
+   }
+}
+
+function resetForm() {
+   $("name").value = "";
+   $("purpose").value = "";
+   $("date").value = "";
+   $("time").value = "";
+   $("submit").setAttribute("data-mode", "create");
+   $("submit").removeAttribute("data-index");
+}
+
+
