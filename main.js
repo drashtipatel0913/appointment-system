@@ -20,7 +20,6 @@ function getCurrentTime() {
    // Updates meridiem based on the hour
    let meridiem = "";
    if (hours >= 12) {
-      hours = hours - 12;
       meridiem = "PM";
    } else {
       meridiem = "AM";
@@ -88,7 +87,7 @@ appointmentForm.addEventListener("submit", (event) => {
       let purpose = $("purpose").value;
       let dateInput = $("date").value;
       let timeInput = $("time").value;
-      
+
       let appointment = {
          _name: _name,
          purpose: purpose,
@@ -110,8 +109,14 @@ let appointments = [];
 // Create function to add the new appointment to the appointments array and save it to local storage
 function createAppointment(appointment) {
 
-   appointments.push(appointment);
-
+   const index = $("submit").getAttribute("data-index");
+   if (index) {
+      // If data-index attribute is set, update the existing appointment
+      appointments[index] = appointment;
+   } else {
+      // Otherwise, add the new appointment to the array
+      appointments.push(appointment);
+   }
    localStorage.setItem("appointments", JSON.stringify(appointments));
 
    displayAppointments();
@@ -124,23 +129,52 @@ function displayAppointments() {
 
    appointments = JSON.parse(localStorage.getItem("appointments")) || [];
 
-   appointments.forEach(function (appointment, index) {
-      tableRows += `
-      <tr>
-        <td>${appointment._name}</td>
-        <td>${appointment.purpose}</td>
-        <td>${appointment.dateInput}</td>
-        <td>${appointment.timeInput}</td>
-        <td>
-          <button class="btn btn-primary" onclick="editAppointment(${index})">Edit</button>
-          <button class="btn btn-danger" onclick="deleteAppointment(${index})">Delete</button>
-        </td>
-      </tr>
-    `;
-   });
-
+   if (appointments.length === 0) {
+      tableRows = "<tr><td colspan='5'>No appointments yet</td></tr>";
+   } else {
+      appointments.forEach(function (appointment, index) {
+         tableRows += `
+         <tr>
+           <td>${appointment._name}</td>
+           <td>${appointment.purpose}</td>
+           <td>${appointment.dateInput}</td>
+           <td>${appointment.timeInput}</td>
+           <td>
+             <button class="btn btn-primary" onclick="editAppointment(${index})">Edit</button>
+             <button class="btn btn-danger" onclick="deleteAppointment(${index})">Delete</button>
+           </td>
+         </tr>
+       `;
+      });
+   }
    tableBody.innerHTML = tableRows;
 }
+
+
+
+// function displayAppointments() {
+//    let tableBody = $("tbody");
+//    let tableRows = "";
+
+//    appointments = JSON.parse(localStorage.getItem("appointments")) || [];
+
+//    appointments.forEach(function (appointment, index) {
+//       tableRows += `
+//       <tr>
+//         <td>${appointment._name}</td>
+//         <td>${appointment.purpose}</td>
+//         <td>${appointment.dateInput}</td>
+//         <td>${appointment.timeInput}</td>
+//         <td>
+//           <button class="btn btn-primary" onclick="editAppointment(${index})">Edit</button>
+//           <button class="btn btn-danger" onclick="deleteAppointment(${index})">Delete</button>
+//         </td>
+//       </tr>
+//     `;
+//    });
+
+//    tableBody.innerHTML = tableRows;
+// }
 
 function editAppointment(index) {
    let appointment = appointments[index];
@@ -148,9 +182,8 @@ function editAppointment(index) {
    $("purpose").value = appointment.purpose;
    $("date").value = appointment.dateInput;
    $("time").value = appointment.timeInput;
-   $("submit").innerHTML="edit";
+   $("submit").innerHTML = "edit";
    $("submit").setAttribute("data-index", index);
-   deleteAppointment(index);
 }
 
 function deleteAppointment(index) {
@@ -170,4 +203,12 @@ function resetForm() {
    $("submit").removeAttribute("data-index");
 }
 
+// Check if appointments exist in local storage when the page loads
+window.onload = function () {
+   let storedAppointments = JSON.parse(localStorage.getItem("appointments"));
+   if (storedAppointments) {
+      appointments = storedAppointments;
+      displayAppointments();
+   }
+}
 
