@@ -117,6 +117,13 @@ function createAppointment(appointment) {
       // Otherwise, add the new appointment to the array
       appointments.push(appointment);
    }
+
+   // Add the meridiem property based on the hour
+   const hour = parseInt(appointment.timeInput.split(":")[0]);
+   appointment.meridiem = hour >= 12 ? "PM" : "AM";
+
+   localStorage.setItem("appointments", JSON.stringify(appointments));
+
    localStorage.setItem("appointments", JSON.stringify(appointments));
 
    displayAppointments();
@@ -136,12 +143,12 @@ function displayAppointments() {
          tableRows += `
          <tr>
            <td>${appointment._name}</td>
-           <td>${appointment.purpose}</td>
+           <td class='text-truncate' style="max-width: 100px;">${appointment.purpose}</td>
            <td>${appointment.dateInput}</td>
-           <td>${appointment.timeInput}</td>
-           <td>
-             <button class="btn btn-primary" onclick="editAppointment(${index})">Edit</button>
-             <button class="btn btn-danger" onclick="deleteAppointment(${index})">Delete</button>
+           <td>${appointment.timeInput} ${appointment.meridiem}</td>
+           <td class='w-25'>
+             <button class="btn update" onclick="editAppointment(${index})">Update</button>
+             <button class="btn btn-outline-danger" onclick="deleteAppointment(${index})">Delete</button>
            </td>
          </tr>
        `;
@@ -150,39 +157,13 @@ function displayAppointments() {
    tableBody.innerHTML = tableRows;
 }
 
-
-
-// function displayAppointments() {
-//    let tableBody = $("tbody");
-//    let tableRows = "";
-
-//    appointments = JSON.parse(localStorage.getItem("appointments")) || [];
-
-//    appointments.forEach(function (appointment, index) {
-//       tableRows += `
-//       <tr>
-//         <td>${appointment._name}</td>
-//         <td>${appointment.purpose}</td>
-//         <td>${appointment.dateInput}</td>
-//         <td>${appointment.timeInput}</td>
-//         <td>
-//           <button class="btn btn-primary" onclick="editAppointment(${index})">Edit</button>
-//           <button class="btn btn-danger" onclick="deleteAppointment(${index})">Delete</button>
-//         </td>
-//       </tr>
-//     `;
-//    });
-
-//    tableBody.innerHTML = tableRows;
-// }
-
 function editAppointment(index) {
    let appointment = appointments[index];
    $("name").value = appointment._name;
    $("purpose").value = appointment.purpose;
    $("date").value = appointment.dateInput;
    $("time").value = appointment.timeInput;
-   $("submit").innerHTML = "edit";
+   $("submit").innerHTML = "Update";
    $("submit").setAttribute("data-index", index);
 }
 
@@ -199,7 +180,8 @@ function resetForm() {
    $("purpose").value = "";
    $("date").value = "";
    $("time").value = "";
-   $("submit").setAttribute("data-mode", "create");
+   $("submit").innerHTML = "Create";
+   $("submit").setAttribute("data-mode", "Create");
    $("submit").removeAttribute("data-index");
 }
 

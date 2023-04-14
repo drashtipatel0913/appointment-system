@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Arizonia&display=swap');
+
+.logo {
+   color: #6aa939;
+   font-size: 45px;
+   font-family: 'Arizonia', cursive;
+}
+
+nav {
+   background-color: #F0EEED;
+}
+
+.navigation a {
+   position: relative;
+   font-size: 18px;
+}
+
+.navigation a::after {
+   content: '';
+   position: absolute;
+   width: 100%;
+   height: 2px;
+   background: #639a39;
+   border-radius: 2px;
+   left: 0;
+   bottom: -0.2px;
+   transform: scaleX(0);
+   transition: all 0.5s ease;
+}
+
+.navigation a:hover:after {
+   transform: scaleX(1);
+}
+
+#submit {
+   background-color: #639a39;
+   color: #ffffff;
+}
+
+.current {
+   background-color: #639a39;
+   color: #ffffff;
+   transition: all 0.5s ease;
+}
+
+.current:hover {
+   background-color: #639a39;
+   color: #ffffff;
+   transform: translateX(5px);
+}
+
+.card-header {
+   background-color: #639a39;
+   color: #ffffff;
+}
+
+.update {
+   color: #ffffff;
+   background-color: #639a39;
+}
