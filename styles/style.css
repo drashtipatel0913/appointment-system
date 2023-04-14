@@ -58,3 +58,10 @@ nav {
    color: #ffffff;
    background-color: #639a39;
 }
+
+.update:hover {
+   border: 2px solid #639a39;
+   color: #639a39;
+   font-weight: 600;
+   background-color: #F0EEED;
+}
